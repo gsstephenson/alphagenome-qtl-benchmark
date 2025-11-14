@@ -1,0 +1,32 @@
+# AlphaGenome QTL Benchmark - Python Dependencies
+
+# Core scientific computing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Machine learning metrics
+scikit-learn>=1.3.0
+
+# Genomics
+pyfaidx>=0.7.0
+pyarrow>=12.0.0  # For parquet support
+
+# AlphaGenome (official API)
+# Note: Must be installed via Google's private repository
+# Contact DeepMind for API access and installation instructions
+# alphagenome
+
+# Plotting
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# Data validation
+pydantic>=2.0.0
+
+# Command line interface
+argparse
+pathlib

@@ -1,0 +1,4 @@
+dataset_id	sample_id	cell_type	tissue	assay	reference
+GSE86886	SRX2069595	CD4_Tcell	Blood	ATAC-seq	Gate_et_al_2018
+GSE31388	SRX096579	LCL	Blood	DNase-seq	Degner_et_al_2012
+GSE116193	SRX4252484	B_cell	Blood	ChIP-seq_H3K27ac	Pelikan_et_al_2018

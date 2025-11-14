@@ -1,0 +1,4 @@
+cell_type	tissue_ontology	alphagenome_ontology	notes
+CD4_Tcell	UBERON:0000178	immune_cd4_tcell	Mapped via ImmPort ontology bridge
+LCL	CL:0000236	immune_bcell_transformed	Map to lymphoblastoid Cell Line
+B_cell	CL:0000236	h3k27ac_bcell	Specific AlphaGenome histone track mapping

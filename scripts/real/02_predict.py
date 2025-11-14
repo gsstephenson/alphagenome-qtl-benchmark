@@ -138,24 +138,28 @@ def predict_variant_official(client, variant_scorers_module, genome_module,
             print(f"\n  Warning: tidy_scores failed: {e}")
             continue
         
-        # Get scorer string representation which contains the requested_output
-        # e.g., "CenterMaskScorer(requested_output=ATAC, ...)" or "GeneMaskLFCScorer(requested_output=RNA_SEQ)"
-        scorer_str = str(scorer_result.scorers[0]) if hasattr(scorer_result, 'scorers') else str(scorer_result)
-        scorer_id = id(scorer_result)  # Get scorer object ID
-        
-        # Extract the requested_output from scorer string
-        # FIXED: Parse requested_output from scorer string instead of relying on missing uns['scorer_name']
-        if 'requested_output=ATAC' in scorer_str:
-            modality = 'ATAC'
-        elif 'requested_output=DNASE' in scorer_str:
-            modality = 'DNase'
-        elif 'requested_output=RNA_SEQ' in scorer_str:
-            modality = 'RNA_SEQ'
-        elif 'requested_output=CHIP_HISTONE' in scorer_str:
-            # For histone marks, use all modalities that map to this scorer
-            # This fixes the hQTLs bug where H3K27ac and H3K4me1 both use CHIP_HISTONE
-            modality = ','.join(variant_row.get('modalities', '').split(','))
+        # Extract modality from the tidy_df output_type column (most reliable)
+        # The output_type column contains the actual modality: ATAC, DNASE, RNA_SEQ, CHIP_HISTONE
+        if 'output_type' in tidy_df.columns and len(tidy_df) > 0:
+            output_type = tidy_df['output_type'].iloc[0]
+            
+            # Map output_type to our modality naming convention
+            if output_type == 'ATAC':
+                modality = 'ATAC'
+            elif output_type == 'DNASE':
+                modality = 'DNase'
+            elif output_type == 'RNA_SEQ':
+                modality = 'RNA_SEQ'
+            elif output_type == 'CHIP_HISTONE':
+                # For CHIP_HISTONE, we need to determine which histone mark(s)
+                # Use the modalities from the variant_row
+                requested_mods = [m.strip() for m in variant_row.get('modalities', '').split(',')]
+                histone_mods = [m for m in requested_mods if m in ['H3K27ac', 'H3K4me1', 'H3K4me3']]
+                modality = ','.join(histone_mods) if histone_mods else 'CHIP_HISTONE'
+            else:
+                modality = output_type  # Use as-is
         else:
+            # Fallback if output_type not available
             modality = 'unknown'
         
         # Use all columns from tidy_df, excluding non-serializable ones
